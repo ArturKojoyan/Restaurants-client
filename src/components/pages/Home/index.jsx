@@ -1,0 +1,46 @@
+import { useState, memo } from 'react';
+import { Row, Col } from 'antd';
+import { useJsApiLoader } from '@react-google-maps/api';
+
+import Map from './Map';
+import Wrapper from './styled/Wrapper';
+import RestaurantCards from './RestaurantCards';
+import CreateRestaurantModal from '../../modals/CreateRestaurantModal';
+
+
+const Home = () => {
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyAFT7DCSeBKZBNl8fwb0CovkFLCO6M6M2Q"
+  });
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const [center, setCenter] = useState({
+    lat: -3.745,
+    lng: -38.523,
+  });
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: -3.745,
+    lng: -38.523,
+  });
+   console.log(currentPosition, 'current pos')
+    return (
+    <Wrapper>
+      <CreateRestaurantModal isModalOpen={isModalOpen} setModalOpen={setModalOpen} currentPosition={currentPosition}/>
+     <Row className='home-container' justify='space-between'>
+
+      <Col span={10} className='cards-container'>
+        <RestaurantCards setCenter={setCenter}/>
+      </Col>
+      
+      <Col span={12} className='map-container'>
+        {isLoaded ? <Map center={center} setModalOpen={setModalOpen} setCurrentPosition={setCurrentPosition}/> : <></>}
+      </Col>
+
+    </Row>
+    </Wrapper>
+    )
+}
+
+export default memo(Home);
