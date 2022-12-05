@@ -29,6 +29,11 @@ const Wrapper = styled('div')`
       p {
         margin-top: 0;
       }
+      button {
+        span {
+          color: red;
+        }
+      }
   }
 
   .cards-container {

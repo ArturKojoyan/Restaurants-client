@@ -46,6 +46,12 @@ const Wrapper = styled('div')`
           border: 1px solid black;
           border-radius: 6px;
           padding: 20px 0;
+          h4{
+           span {
+            color: white;
+            font-weight: 400;
+           }
+          }
        } 
  }
 `

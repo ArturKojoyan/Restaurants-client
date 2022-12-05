@@ -1,17 +1,24 @@
 import './index.css';
-import { memo, useState } from 'react';
-import { Modal, Form, Input, Button, InputNumber, Upload } from 'antd';
+import { memo, useCallback } from 'react';
+import { Modal, Form, Input, Button, InputNumber } from 'antd';
+import Axios from 'axios';
 
 const CreateRestaurantModal = (props) => {
   const { isModalOpen, setModalOpen, currentPosition } = props;
   const { lat, lng } = currentPosition;
-  const [ image, setImage ] = useState('');
 
-  const onFinish = (values) => {
+  const onSubmit = useCallback((values) => {
     values.latitude = values.latitude.toString();
     values.longitude = values.longitude.toString();
-    console.log('Success:', values);
-  };
+    Axios.post('http://localhost:8080/restaurant',{
+      name: values.name,
+      address: values.address,
+      description: values.description,
+      latitude: values.latitude,
+      longitude: values.longitude,
+    })
+    window.location.reload();
+  },[]);
 
     return( 
     <>
@@ -19,7 +26,6 @@ const CreateRestaurantModal = (props) => {
         open={isModalOpen}
         title="Create Restaurant"
         okText='Save'
-        // onOk={handleOk}
         onCancel={() => setModalOpen(false)}
         footer={null}
       >
@@ -36,50 +42,10 @@ const CreateRestaurantModal = (props) => {
         latitude: lat,
         longitude: lng,
       }}
-      onFinish={onFinish}
-      // onFinishFailed={onFinishFailed}
+      onFinish={onSubmit}
       autoComplete="off"
     >
-      <Form.Item
-        label="upload image"
-        name="image"
-        rules={[
-          {
-            required: true,
-            message: 'image is required!',
-          },
-        ]}
-      >
-         {
-              image ?
-                <Button
-                  type='link'
-                  size='small'
-                  className='delete-color'
-                  onClick={() => setImage("")}
-                >
-                  Remove
-                </Button> :
-        <Upload
-             beforeUpload={(file) => {
-               return false
-             }}
-             onChange={(e) => {
-               if (e.file instanceof Blob) {
-                 const file = e.file;
-                 setImage(URL.createObjectURL(file))
-               }
-             }}
-           >
-             <Button
-               type='link'
-               size='small'>
-               Add Image
-             </Button>
-        </Upload>
-        }
-      </Form.Item>
-       
+    
       <Form.Item
         label="name"
         name="name"
@@ -117,13 +83,13 @@ const CreateRestaurantModal = (props) => {
         label="latitude"
         name="latitude"
         >
-        <InputNumber defaultValue={lat}/>
+        <InputNumber />
       </Form.Item>
       <Form.Item 
         label="longitude"
         name="longitude"
        >
-        <InputNumber defaultValue={lng}/>
+        <InputNumber />
       </Form.Item>
 
       <Form.Item
